@@ -1,0 +1,7 @@
+There seems to be lots of options for tools for an application coded with Python for taking care of the CI setup steps like linting, testing and building. For example pylint and flake8 would be good options for linting to enforce coding standards for the team.
+For writing tests one could choose e.g. pytest, which is a popular testing framework, together with coverage.py to measure testing coverage.
+Setuptools seems to be the standard tool for building and packaging Python projects. Another option could be poetry, which is a dependency management and building tool.
+
+Some good CI tool alternatives for Jenkins and GitHub Actions for a Python project could be for example GitLab CI/CD and TeamCity. GitLab CI/CD is a cloud-based platform with direct support for Python environments and prebuilt Docker images. It is also easily integrated with e.g. pytest and flake8 tools. For a self-hosted alternative, TeamCity could work as it supports Python build runners and dependency management. It also works well with tools like pytest.
+
+One could argue that a cloud-based CI setup might be better for a team of 6 people. It is easier to set up allowing the team to focus on the active development and the incoming release. Cloud-based services tend to be also cost-effective for relatively small teams. In the end, information like budget, team expertise, build complexity and future plans like scaling would be the required information to make the final decision.
