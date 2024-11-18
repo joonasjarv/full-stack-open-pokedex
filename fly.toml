@@ -28,6 +28,7 @@ primary_region = 'arn'
 [[http_service.checks]]
   grace_period = "10s"
   interval = "30s"
+  restart_limit = 0
   method = "GET"
   timeout = "5s"
   path = "/health"
