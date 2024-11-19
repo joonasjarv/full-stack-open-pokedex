@@ -1,8 +1,9 @@
 name: Periodic health check
 
-on:
-  schedule:
-    - cron: "*/15 * * * *"
+#on:
+#  schedule:
+#    - cron: "*/15 * * * *"
+on: workflow_dispatch # Run only manually for now
 
 jobs:
   health_check:
