@@ -62,7 +62,7 @@ jobs:
         run: echo "TIMESTAMP=$(TZ='Europe/Helsinki' date +'%T')" >> $GITHUB_ENV
       - run: git fetch --prune --unshallow --tag
       - name: Get latest tag
-        run: echo "LATEST_TAG=$(git describe --tags --abbrev=0 HEAD~)" >> $GITHUB_ENV
+        run: echo "LATEST_TAG=$(git describe --tags --abbrev=0)" >> $GITHUB_ENV
       - name: Notify Discord success
         run: |
           curl -X POST -H "Content-Type: application/json" \
