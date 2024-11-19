@@ -56,3 +56,60 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BUMP: patch
           WITH_V: true
+
+  notify_discord_on_success:
+    runs-on: ubuntu-20.04
+    needs: simple_deployment_pipeline
+    if: ${{ success() && github.env.IS_PUSH_EVENT && !github.env.SKIP_DEPLOY_AND_TAG }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Store timestamp
+        run: echo "TIMESTAMP=$(TZ='Europe/Helsinki' date +'%T')" >> $GITHUB_ENV
+      - run: git fetch --prune --unshallow --tag
+      - name: Get latest tag
+        run: echo "LATEST_TAG=$(git describe --tags --abbrev=0 HEAD~)" >> $GITHUB_ENV
+      - name: Notify Discord success
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{
+                "username": "GitHub Actions Pipeline",
+                "avatar_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png",
+                "embeds": [
+                  {
+                    "title": "A new version of Pokedex deployed",
+                    "description": "by ${{ github.actor }}. Version: ${{ env.LATEST_TAG }}",
+                    "color": 65280,
+                    "footer": {
+                      "text": "Severity: Informational | Time: ${{ env.TIMESTAMP }}"
+                    }
+                  }
+                ]
+              }' \
+            ${{ secrets.DISCORD_WEBHOOK }}
+
+  notify_discord_on_failure:
+    runs-on: ubuntu-20.04
+    needs: simple_deployment_pipeline
+    if: ${{ failure() && github.env.IS_PUSH_EVENT }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Store timestamp
+        run: echo "TIMESTAMP=$(TZ='Europe/Helsinki' date +'%T')" >> $GITHUB_ENV
+      - name: Notify Discord failure
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{
+                "username": "GitHub Actions Pipeline",
+                "avatar_url": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png",
+                "embeds": [
+                  {
+                    "title": "Build failed",
+                    "description": "commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build.",
+                    "color": 16711680,
+                    "footer": {
+                      "text": "Severity: Error | Time: ${{ env.TIMESTAMP }}"
+                    }
+                  }
+                ]
+              }' \
+            ${{ secrets.DISCORD_WEBHOOK }}
